@@ -1,0 +1,16 @@
+[package]
+name = "metafont"
+version = "0.1.0"
+authors = ["CrLF0710 <crlf0710@gmail.com>"]
+edition = "2018"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+tracing = { version = "0.1.21", optional = true }
+tracing-subscriber = { version = "0.2.14", optional = true }
+globals_struct = {git = "https://github.com/crlf0710/globals_struct"}
+pascal_io = {git = "https://github.com/crlf0710/pascal_io"}
+
+[features]
+trace = ['tracing', 'tracing-subscriber']
+default = []
