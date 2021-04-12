@@ -29,15 +29,15 @@ pub(crate) macro_rules! double {
     }
 }
 // @d loop == @+ while true do@+ {repeat over and over until a |goto| happens}
-comment_text!();
+eliminated_text!();
 // @f loop == xclause
 //   {\.{WEB}'s |xclause| acts like `\ignorespaces|while true do|\unskip'}
-comment_text!();
+eliminated_text!();
 // @d do_nothing == {empty statement}
 pub(crate) macro_rules! do_nothing {
     () => {};
 }
 // @d return == goto exit {terminate a procedure call}
-comment_text!();
+eliminated_text!();
 // @f return == nil {\.{WEB} will henceforth say |return| instead of \\{return}}
-comment_text!();
+eliminated_text!();

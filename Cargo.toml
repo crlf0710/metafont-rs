@@ -13,4 +13,5 @@ pascal_io = {git = "https://github.com/crlf0710/pascal_io"}
 
 [features]
 trace = ['tracing', 'tracing-subscriber']
+no_init = []
 default = []

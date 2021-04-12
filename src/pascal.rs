@@ -70,9 +70,9 @@ impl core::fmt::Display for char {
     }
 }
 
-
 macro_rules! define_ranged_numeric {
     ($v:vis $name:ident => $base_type:path) => {
+        #[derive(Copy, Clone)]
         $v struct $name<const MIN: $base_type, const MAX: $base_type>($base_type);
 
         impl<const MIN: $base_type, const MAX: $base_type> $name<MIN, MAX> {
@@ -102,6 +102,168 @@ define_ranged_numeric!(pub i32_from_m_to_n => i32);
 pub type u8_from_0_to_n<const N: u8> = u8_from_m_to_n<0, N>;
 pub type u16_from_0_to_n<const N: u16> = u16_from_m_to_n<0, N>;
 pub type u32_from_0_to_n<const N: u32> = u32_from_m_to_n<0, N>;
+
+#[derive(Clone, Copy, PartialEq, PartialOrd)]
+pub(crate) struct LiftedInteger(integer);
+
+#[derive(Clone, Copy, PartialEq, PartialOrd)]
+pub(crate) struct LiftedWord(word);
+
+pub(crate) trait LiftToInt {
+    fn lift_to_int(self) -> LiftedInteger;
+}
+
+pub(crate) trait LiftToWord {
+    fn lift_to_word(self) -> LiftedWord;
+}
+
+macro_rules! impl_lift_to_int {
+    ($ty:path) => {
+        impl LiftToInt for $ty {
+            fn lift_to_int(self) -> LiftedInteger {
+                LiftedInteger(self as _)
+            }
+        }
+    };
+}
+
+macro_rules! impl_lift_to_word {
+    ($ty:path) => {
+        impl LiftToWord for $ty {
+            fn lift_to_word(self) -> LiftedWord {
+                LiftedWord(self as _)
+            }
+        }
+    };
+}
+
+macro_rules! impl_partial_cmp_for_lifted_integer {
+    ($ty:path) => {
+        impl PartialEq<$ty> for LiftedInteger {
+            fn eq(&self, other: &$ty) -> bool {
+                self.0.eq(&(*other as integer))
+            }
+        }
+        impl PartialOrd<$ty> for LiftedInteger {
+            fn partial_cmp(&self, other: &$ty) -> Option<core::cmp::Ordering> {
+                self.0.partial_cmp(&(*other as integer))
+            }
+        }
+    };
+}
+
+macro_rules! impl_partial_cmp_for_lifted_word {
+    ($ty:path) => {
+        impl PartialEq<$ty> for LiftedWord {
+            fn eq(&self, other: &$ty) -> bool {
+                self.0.eq(&(*other as word))
+            }
+        }
+        impl PartialOrd<$ty> for LiftedWord {
+            fn partial_cmp(&self, other: &$ty) -> Option<core::cmp::Ordering> {
+                self.0.partial_cmp(&(*other as word))
+            }
+        }
+
+        impl core::ops::Add<$ty> for LiftedWord {
+            type Output = Self;
+
+            fn add(self, rhs: $ty) -> Self {
+                Self(self.0.add(rhs as word))
+            }
+        }
+    };
+}
+
+impl_lift_to_int!(u8);
+impl_lift_to_int!(u16);
+impl_lift_to_int!(i8);
+impl_lift_to_int!(i16);
+impl_lift_to_int!(i32);
+impl_partial_cmp_for_lifted_integer!(u8);
+impl_partial_cmp_for_lifted_integer!(u16);
+impl_partial_cmp_for_lifted_integer!(i8);
+impl_partial_cmp_for_lifted_integer!(i16);
+impl_partial_cmp_for_lifted_integer!(i32);
+impl_lift_to_word!(u8);
+impl_lift_to_word!(u16);
+impl_lift_to_word!(u32);
+impl_partial_cmp_for_lifted_word!(u8);
+impl_partial_cmp_for_lifted_word!(u16);
+impl_partial_cmp_for_lifted_word!(u32);
+
+pub(crate) trait IsOddOrEven {
+    fn is_odd(&self) -> boolean;
+    fn is_even(&self) -> boolean {
+        !self.is_odd()
+    }
+}
+
+macro_rules! impl_is_even_or_odd_for_primitive {
+    ($t:path) => {
+        impl IsOddOrEven for $t {
+            fn is_odd(&self) -> boolean {
+                self % 2 != 0
+            }
+        }
+    };
+}
+
+impl_is_even_or_odd_for_primitive!(u8);
+impl_is_even_or_odd_for_primitive!(u16);
+impl_is_even_or_odd_for_primitive!(u32);
+impl_is_even_or_odd_for_primitive!(i8);
+impl_is_even_or_odd_for_primitive!(i16);
+impl_is_even_or_odd_for_primitive!(i32);
+
+pub(crate) unsafe trait DefaultWithZeroed {}
+
+macro_rules! impl_zeroed_default_for_primitive {
+    ($t:path) => {
+        unsafe impl DefaultWithZeroed for $t {}
+    };
+}
+
+impl_zeroed_default_for_primitive!(u8);
+impl_zeroed_default_for_primitive!(u16);
+impl_zeroed_default_for_primitive!(u32);
+impl_zeroed_default_for_primitive!(i8);
+impl_zeroed_default_for_primitive!(i16);
+impl_zeroed_default_for_primitive!(i32);
+
+pub(crate) trait ZeroedDefault {
+    fn zeroed_default() -> Self;
+}
+
+impl<T> ZeroedDefault for Box<T>
+where
+    T: DefaultWithZeroed,
+{
+    fn zeroed_default() -> Self {
+        unsafe { Box::new_zeroed().assume_init() }
+    }
+}
+
+macro_rules! define_ranged_numeric_indexed_array {
+    ($v:vis $name:ident => $base_type:path; $first:expr, $last:expr) => {
+        #[derive(Copy, Clone)]
+        $v struct $name<ELEMENT>
+            ([ELEMENT; ($last as usize).checked_sub($first as usize).unwrap()]);
+
+        unsafe impl<ELEMENT> crate::pascal::DefaultWithZeroed for $name<ELEMENT> where ELEMENT: crate::pascal::DefaultWithZeroed {
+        }
+        impl<ELEMENT> crate::pascal::ZeroedDefault for $name<ELEMENT> where ELEMENT: crate::pascal::DefaultWithZeroed {
+            fn zeroed_default() -> Self {
+                unsafe {
+                    core::mem::zeroed()
+                }
+            }
+        }
+
+        impl<ELEMENT> $name<ELEMENT> {
+        }
+    };
+}
 
 pub(crate) struct file_of_text_char {
     file_state: FileState<text_char>,
@@ -198,7 +360,9 @@ impl PascalFile for file_of_text_char {
         let read_target: Box<dyn ReadLine> = if path == "TTY:" {
             term_special_handling = true;
             Box::new(io::stdin())
-        } else if false /* path == crate::section_0011::pool_name */ {
+        } else if false
+        /* path == crate::section_0011::pool_name */
+        {
             /* Box::new(crate::string_pool::pool_file()) */
             todo!();
         } else {
@@ -243,7 +407,6 @@ impl<T> Default for file_of<T> {
         }
     }
 }
-
 
 impl<T: FromBlob + ToBlob> PascalFile for file_of<T> {
     type Unit = T;
@@ -326,4 +489,4 @@ impl<T: FromBlob + ToBlob> PascalFile for file_of<T> {
 pub(crate) type packed_file_of<T> = file_of<T>;
 
 use core::fmt;
-use pascal_io::{FileState, PascalFile, FromBlob, ToBlob};
+use pascal_io::{FileState, FromBlob, PascalFile, ToBlob};

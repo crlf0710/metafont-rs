@@ -21,22 +21,23 @@
 // @d mtype==t@&y@&p@&e {this is a \.{WEB} coding trick:}
 // @f mtype==type {`\&{mtype}' will be equivalent to `\&{type}'}
 // @f type==true {but `|type|' will not be treated as a reserved word}
-comment_text!();
+eliminated_text!();
 
 // @p @t\4@>@<Compiler directives@>@/
-comment_text!();
+eliminated_text!();
 // program MF; {all file names are defined dynamically}
-comment_text!();
+eliminated_text!();
 // label @<Labels in the outer block@>@/
-comment_text!();
+eliminated_text!();
 // const @<Constants in the outer block@>@/
-comment_text!();
+eliminated_text!();
 // mtype @<Types in the outer block@>@/
-comment_text!();
+eliminated_text!();
 // var @<Global variables@>@/
 #[globals_struct]
 pub mod MetafontSystem {
     include!("src/section_0031.rs");
+    include!("src/section_0038.rs");
     include!("src/section_0624.rs");
     include!("src/section_1203.rs");
 }
@@ -44,19 +45,19 @@ pub mod MetafontSystem {
 impl_debug_with_literal!(MetafontSystem, "MetafontSystem");
 
 // @#
-comment_text!();
+eliminated_text!();
 
 // procedure initialize; {this procedure gets things started properly}
 /// this procedure gets things started properly
 pub(crate) fn initialize(_globals: &mut MetafontSystem) {
     // var @<Local variables for initialization@>@/
-    comment_text!();
+    eliminated_text!();
     // begin @<Set initial values of key variables@>@/
     // end;@#
 }
 // @t\4@>@<Basic printing procedures@>@/
-comment_text!();
+eliminated_text!();
 // @t\4@>@<Error handling procedures@>@/
-comment_text!();
+eliminated_text!();
 
 use globals_struct::globals_struct;

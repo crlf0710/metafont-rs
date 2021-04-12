@@ -45,12 +45,13 @@
 
 // TeX is a trademark of the American Mathematical Society.
 // METAFONT is a trademark of Addison-Wesley Publishing Company.
-#![feature(pub_macro_rules, const_panic)]
+#![feature(pub_macro_rules, const_panic, const_option, new_uninit)]
 #![deny(warnings, missing_docs, missing_debug_implementations)]
 #![allow(
     dead_code,
     non_upper_case_globals,
     non_camel_case_types,
+    non_snake_case,
     unused_imports,
     unused_doc_comments
 )]
@@ -64,7 +65,17 @@ mod section_0001;
 mod section_0002;
 mod section_0003;
 mod section_0004;
-mod section_0005_to_0015;
+mod section_0005;
+mod section_0006;
+mod section_0007;
+mod section_0008;
+mod section_0009;
+mod section_0010;
+mod section_0011;
+mod section_0012;
+mod section_0013;
+mod section_0014;
+mod section_0015;
 mod section_0016;
 mod section_0017_to_0023;
 mod section_0024;
@@ -73,7 +84,11 @@ mod section_0031;
 mod section_0032;
 mod section_0033;
 mod section_0034_to_0036;
-mod section_0037_to_0053;
+mod section_0037;
+mod section_0038;
+mod section_0039_to_0046;
+mod section_0047;
+mod section_0048_to_0053;
 mod section_0054;
 mod section_0055;
 mod section_0056;
@@ -85,21 +100,33 @@ mod section_0076;
 mod section_0077_to_0094;
 mod section_0095_to_0119;
 mod section_0120_to_0152;
-mod section_0153_to_0154;
+mod section_0153;
+mod section_0154;
 mod section_0155;
 mod section_0156;
 mod section_0157;
 mod section_0158_to_0174;
 mod section_0175_to_0185;
-mod section_0186_to_0199;
+mod section_0186_to_0193;
+mod section_0194;
+mod section_0195_to_0199;
 mod section_0200;
-mod section_0201_to_0213;
-mod section_0214_to_0227;
-mod section_0228_to_0459;
+mod section_0201;
+mod section_0202_to_0203;
+mod section_0204;
+mod section_0205_to_0213;
+mod section_0214;
+mod section_0215_to_0227;
+mod section_0228_to_0308;
+mod section_0309;
+mod section_0310;
+mod section_0311_to_0459;
 mod section_0460_to_0468;
 mod section_0490_to_0523;
 mod section_0524_to_0537;
-mod section_0538_to_0563;
+mod section_0538_to_0552;
+mod section_0553;
+mod section_0554_to_0563;
 mod section_0564_to_0584;
 mod section_0585_to_0617;
 mod section_0618_to_0623;
@@ -109,7 +136,11 @@ mod section_0627_to_0646;
 mod section_0647_to_0651;
 mod section_0652;
 mod section_0653_to_0765;
-mod section_0766_to_0892;
+mod section_0766_to_0774;
+mod section_0775;
+mod section_0776;
+mod section_0777;
+mod section_0778_to_0892;
 mod section_0893_to_1016;
 mod section_1017;
 mod section_1018_to_1076;

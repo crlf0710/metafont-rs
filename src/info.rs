@@ -42,7 +42,7 @@ macro_rules! migration_complete {
     () => {};
 }
 
-macro_rules! comment_text {
+macro_rules! eliminated_text {
     () => {};
 }
 
@@ -102,16 +102,6 @@ macro_rules! goto_forward_label {
 macro_rules! goto_backward_label {
     ($lbl:lifetime) => {
         continue $lbl;
-    };
-}
-
-
-macro_rules! region_inimf {
-    ($($statements:tt)* ) => {
-        #[cfg(feature = "inimf")]
-        {
-            $($statements)*
-        }
     };
 }
 

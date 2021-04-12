@@ -40,7 +40,7 @@ impl MetafontSystem {
         /// set global variables to their starting values
         initialize(system);
         // @!init if not get_strings_started then goto final_end;
-        region_inimf! {
+        region_init! {
             if !get_strings_started(system) {
                 goto_forward_label!('final_end);
             }
@@ -51,11 +51,11 @@ impl MetafontSystem {
             /// call `primitive` for each primitive
             init_prim(system);
             // init_str_ptr:=str_ptr; init_pool_ptr:=pool_ptr;@/
-            system.init_str_ptr = system.str_ptr;
-            system.init_pool_ptr = system.pool_ptr;
+            system.string_pool.init_str_ptr = system.string_pool.str_ptr;
+            system.string_pool.init_pool_ptr = system.string_pool.pool_ptr;
             // max_str_ptr:=str_ptr; max_pool_ptr:=pool_ptr; fix_date_and_time;
-            system.max_str_ptr = system.str_ptr;
-            system.max_pool_ptr = system.pool_ptr;
+            system.string_pool.max_str_ptr = system.string_pool.str_ptr;
+            system.string_pool.max_pool_ptr = system.string_pool.pool_ptr;
             fix_date_and_time(system);
             // tini@/
         }
@@ -74,7 +74,7 @@ impl MetafontSystem {
         // if start_sym>0 then {insert the `\&{everyjob}' symbol}
         if !system.interpreter_system.start_sym.is_null() {
             /// insert the `\everyjob` symbol
-            comment_text!();
+            eliminated_text!();
             // begin cur_sym:=start_sym; back_input;
             system.interpreter_system.cur_sym = system.interpreter_system.start_sym;
             system.interpreter_system.back_input();
@@ -107,13 +107,31 @@ fn Initialize_the_output_routines(_system: &mut MetafontSystem) {
 
 #[allow(non_snake_case)]
 fn Check_the_constant_values_for_consistency(_system: &mut MetafontSystem) -> Result<(), usize> {
-    todo!();
+    let mut bad = 0;
+    crate::section_0014::Check_the_constant_values_for_consistency_0014(&mut bad);
+    crate::section_0154::Check_the_constant_values_for_consistency_0154(&mut bad);
+    crate::section_0204::Check_the_constant_values_for_consistency_0204(&mut bad);
+    crate::section_0214::Check_the_constant_values_for_consistency_0214(&mut bad);
+    crate::section_0310::Check_the_constant_values_for_consistency_0310(&mut bad);
+    crate::section_0553::Check_the_constant_values_for_consistency_0553(&mut bad);
+    crate::section_0777::Check_the_constant_values_for_consistency_0777(&mut bad);
+    if bad != 0 {
+        return Err(bad);
+    }
+    Ok(())
 }
 
 use crate::section_0004::initialize;
 use crate::section_0004::MetafontSystem;
+use crate::section_0008::{region_init, items_init};
 use crate::section_0032::t_open_out;
 use crate::section_0056::wterm_ln;
 use crate::section_0071::history_kind;
 use crate::section_0076::try_or_jump;
+use crate::section_0194::fix_date_and_time;
 use crate::section_1211::Get_the_first_line_of_input_and_prepare_to_start;
+items_init! {
+    use crate::section_0047::get_strings_started;
+    use crate::section_1210::init_tab;
+    use crate::section_1210::init_prim;
+}

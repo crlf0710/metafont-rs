@@ -42,25 +42,19 @@
 //! It is usually most efficient to have |min_quarterword=min_halfword=0|,
 //! so one should try to achieve this unless it causes a severe problem.
 //! The values defined here are recommended for most 32-bit computers.
-//!
-//! @d min_quarterword=0 {smallest allowable value in a |quarterword|}
-//! @d max_quarterword=255 {largest allowable value in a |quarterword|}
-//! @d min_halfword==0 {smallest allowable value in a |halfword|}
-//! @d max_halfword==65535 {largest allowable value in a |halfword|}
-//!
-//! @ Here are the inequalities that the quarterword and halfword values
-//! must satisfy (or rather, the inequalities that they mustn't satisfy):
-//!
-//! @<Check the ``constant''...@>=
-//! init if mem_max<>mem_top then bad:=10;@+tini@;@/
-//! if mem_max<mem_top then bad:=10;
-//! if (min_quarterword>0)or(max_quarterword<127) then bad:=11;
-//! if (min_halfword>0)or(max_halfword<32767) then bad:=12;
-//! if (min_quarterword<min_halfword)or@|
-//!   (max_quarterword>max_halfword) then bad:=13;
-//! if (mem_min<min_halfword)or(mem_max>=max_halfword) then bad:=14;
-//! if max_strings>max_halfword then bad:=15;
-//! if buf_size>max_halfword then bad:=16;
-//! if (max_quarterword-min_quarterword<255)or@|
-//!   (max_halfword-min_halfword<65535) then bad:=17;
-//!
+
+// @d min_quarterword=0 {smallest allowable value in a |quarterword|}
+/// smallest allowable value in a `quarterword`
+pub(crate) const min_quarterword: quarterword = quarterword::MIN;
+// @d max_quarterword=255 {largest allowable value in a |quarterword|}
+/// largest allowable value in a `quarterword`
+pub(crate) const max_quarterword: quarterword = quarterword::MAX;
+// @d min_halfword==0 {smallest allowable value in a |halfword|}
+/// smallest allowable value in a `halfword`
+pub(crate) const min_halfword: halfword = halfword::MIN;
+// @d max_halfword==65535 {largest allowable value in a |halfword|}
+/// largest allowable value in a `halfword`
+pub(crate) const max_halfword: halfword = halfword::MAX;
+
+use crate::section_0156::{halfword, quarterword};
+
